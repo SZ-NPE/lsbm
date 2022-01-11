@@ -11,7 +11,7 @@
 #include "lsbm/slice.h"
 #include "lsbm/status.h"
 
-namespace leveldb {
+namespace lsbmdb {
 
 class WritableFile;
 
@@ -44,6 +44,6 @@ class Writer {
 };
 
 }  // namespace log
-}  // namespace leveldb
+}  // namespace lsbmdb
 
 #endif  // STORAGE_LEVELDB_DB_LOG_WRITER_H_

@@ -6,7 +6,7 @@
 
 
 
-namespace leveldb {
+namespace lsbmdb {
 
 
 namespace {
@@ -69,4 +69,4 @@ Iterator* NewErrorIterator(const Status& status) {
   return new EmptyIterator(status);
 }
 
-}  // namespace leveldb
+}  // namespace lsbmdb

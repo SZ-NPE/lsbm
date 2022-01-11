@@ -10,7 +10,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-namespace leveldb {
+namespace lsbmdb {
 
 class Arena {
  public:
@@ -63,6 +63,6 @@ inline char* Arena::Allocate(size_t bytes) {
   return AllocateFallback(bytes);
 }
 
-}  // namespace leveldb
+}  // namespace lsbmdb
 
 #endif  // STORAGE_LEVELDB_UTIL_ARENA_H_

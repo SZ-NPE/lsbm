@@ -16,7 +16,7 @@
 #include "lsbm/slice.h"
 #include "util/hash.h"
 
-namespace leveldb {
+namespace lsbmdb {
 
 class FilterPolicy;
 

@@ -7,7 +7,7 @@
 
 #include "lsbm/iterator.h"
 
-namespace leveldb {
+namespace lsbmdb {
 
 struct ReadOptions;
 
@@ -29,6 +29,6 @@ extern Iterator* NewTwoLevelIterator(
     void* arg,
     const ReadOptions& options);
 
-}  // namespace leveldb
+}  // namespace lsbmdb
 
 #endif  // STORAGE_LEVELDB_TABLE_TWO_LEVEL_ITERATOR_H_

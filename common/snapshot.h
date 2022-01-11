@@ -7,7 +7,7 @@
 
 #include "lsbm/db.h"
 
-namespace leveldb {
+namespace lsbmdb {
 
 class SnapshotList;
 
@@ -61,6 +61,6 @@ class SnapshotList {
   SnapshotImpl list_;
 };
 
-}  // namespace leveldb
+}  // namespace lsbmdb
 
 #endif  // STORAGE_LEVELDB_DB_SNAPSHOT_H_

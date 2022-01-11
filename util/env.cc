@@ -4,7 +4,7 @@
 
 #include "lsbm/env.h"
 
-namespace leveldb {
+namespace lsbmdb {
 
 Env::~Env() {
 }
@@ -94,4 +94,4 @@ Status ReadFileToString(Env* env, const std::string& fname, std::string* data) {
 EnvWrapper::~EnvWrapper() {
 }
 
-}  // namespace leveldb
+}  // namespace lsbmdb

@@ -4,8 +4,8 @@
 
 #include "lsbm/filter_policy.h"
 
-namespace leveldb {
+namespace lsbmdb {
 
 FilterPolicy::~FilterPolicy() { }
 
-}  // namespace leveldb
+}  // namespace lsbmdb

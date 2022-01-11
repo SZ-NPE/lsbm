@@ -27,7 +27,7 @@ using namespace std;
 #include <cstdint>
 
 
-namespace leveldb {
+namespace lsbmdb {
 
 
 // Maximum bytes of overlaps in grandparent (i.e., level+2) before we
@@ -1052,7 +1052,7 @@ int Version::RangeQuery(const ReadOptions& options,
 
   int found = 0;
   int checked = 0;
-  leveldb::Options tmpopt;
+  lsbmdb::Options tmpopt;
   //level 0
   {
   	  // Level-0 files may overlap each other.  Find all files that
@@ -1324,7 +1324,7 @@ void Version::RefineCompactionBuffer(const int level){
 				 SortedTable *cur_temp = head->prev;//start from the tail
 				 int cblevel = 0;
 				 while(cur_temp!=cur&&!visible){
-					 leveldb::FileMetaData* const* cbfiles = &cur_temp->files_[0];
+					 lsbmdb::FileMetaData* const* cbfiles = &cur_temp->files_[0];
 					 for (; cursor[cblevel] < cur_temp->files_.size(); ) {
 
 					   FileMetaData* cbf = cbfiles[cursor[cblevel]];
@@ -1951,7 +1951,7 @@ Status BasicVersionSet::LogAndApply(VersionEdit* edit, port::Mutex* mu) {
   bool syncforlastlevel = true;
   for(int level=1;level<config::kNumLevels;level++){
 		//cerr<<"level "<<level<<" read cursor: before "<<runtime::read_cursor_[level]<<endl;
-	    int64_t portion = 100-current_->TotalPartSize(level,DELETION_PART)*100/leveldb::MaxMBytesForLevel(level-1);
+	    int64_t portion = 100-current_->TotalPartSize(level,DELETION_PART)*100/lsbmdb::MaxMBytesForLevel(level-1);
 
 		if(portion<0){
 			portion = 0;
@@ -2212,7 +2212,7 @@ void VersionSet::Finalize(Version* v) {
 
 //teng: print current version
 void BasicVersionSet::printCurVersion(){
-	  if(!leveldb::runtime::print_version_info){
+	  if(!lsbmdb::runtime::print_version_info){
 		  return;
 	  }
 	  current_->printVersion();
@@ -2500,10 +2500,10 @@ Status BasicVersionSet::MoveLevelDown(int level, port::Mutex *mutex_) {
     	this->ClearLevel(level+1,mutex_);
     }
 
-    //leveldb::FileMetaData* const* files = &this->current()->files_[level][0];
+    //lsbmdb::FileMetaData* const* files = &this->current()->files_[level][0];
    // size_t num_files = this->current()->files_[level].size();
 
-	leveldb::FileMetaData* const* files = &this->current()->levels_[level][INSERTION_PART]->files_[0];
+	lsbmdb::FileMetaData* const* files = &this->current()->levels_[level][INSERTION_PART]->files_[0];
 	size_t num_files = this->current()->levels_[level][INSERTION_PART]->files_.size();
 
     VersionEdit edit;
@@ -2511,7 +2511,7 @@ Status BasicVersionSet::MoveLevelDown(int level, port::Mutex *mutex_) {
 
     //TODO, operation on the compaction buffer
     for(int i = 0; i < num_files; i++) {
-    	leveldb::FileMetaData* f = files[i];
+    	lsbmdb::FileMetaData* f = files[i];
     	edit.DeleteFile(INSERTION_PART ,level, f->number);
     	edit.AddFile(DELETION_PART, level+1, f->number, f->file_size,
     	                       f->smallest, f->largest);
@@ -2520,7 +2520,7 @@ Status BasicVersionSet::MoveLevelDown(int level, port::Mutex *mutex_) {
     edit.isLevelMove = true;
     edit.MovedLevel = level;
 
-    leveldb::Status status = this->LogAndApply(&edit, mutex_);
+    lsbmdb::Status status = this->LogAndApply(&edit, mutex_);
     return status;
 }
 
@@ -2529,17 +2529,17 @@ Status BasicVersionSet::MoveLevelDown(int level, port::Mutex *mutex_) {
 Status BasicVersionSet::ClearLevel(int level, port::Mutex *mutex_) {
 	assert(level<config::kNumLevels);
 
-    //leveldb::FileMetaData* const* files = &this->current()->files_[level][0];
+    //lsbmdb::FileMetaData* const* files = &this->current()->files_[level][0];
     //size_t num_files = this->current()->files_[level].size();
-	leveldb::FileMetaData* const* files = &this->current()->levels_[level][DELETION_PART]->files_[0];
+	lsbmdb::FileMetaData* const* files = &this->current()->levels_[level][DELETION_PART]->files_[0];
 	size_t num_files = this->current()->levels_[level][DELETION_PART]->files_.size();
     VersionEdit edit;
     for(int i = 0; i < num_files; i++) {
-    	leveldb::FileMetaData* f = files[i];
+    	lsbmdb::FileMetaData* f = files[i];
     	edit.DeleteFile(DELETION_PART, level, f->number);
     }
     //TODO apply to deletion part
-    leveldb::Status status = this->LogAndApply(&edit, mutex_);
+    lsbmdb::Status status = this->LogAndApply(&edit, mutex_);
     return status;
 }
 
@@ -2611,4 +2611,4 @@ void Compaction::ReleaseInputs() {
   }
 }
 
-}  // namespace leveldb
+}  // namespace lsbmdb

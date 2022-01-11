@@ -13,7 +13,7 @@
 #include "lsbm/status.h"
 #include "port/port.h"
 
-namespace leveldb {
+namespace lsbmdb {
 
 class Env;
 
@@ -82,6 +82,6 @@ extern Status SetCurrentFile(Env* env, const std::string& dbname,
 extern Status SetCurrentSMFile(Env* env, const std::string& dbname,
         uint64_t descriptor_number);
 
-}  // namespace leveldb
+}  // namespace lsbmdb
 
 #endif  // STORAGE_LEVELDB_DB_FILENAME_H_

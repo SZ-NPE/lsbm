@@ -28,7 +28,7 @@
 #include "util/posix_logger.h"
 
 
-namespace leveldb {
+namespace lsbmdb {
 
 namespace {
 
@@ -618,4 +618,4 @@ Env* Env::Default() {
   return default_env;
 }
 
-}  // namespace leveldb
+}  // namespace lsbmdb

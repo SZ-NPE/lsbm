@@ -34,7 +34,7 @@
 #include "lsbm/table_builder.h"
 #include "util/coding.h"
 
-namespace leveldb {
+namespace lsbmdb {
 
 BlockBuilder::BlockBuilder(const Options* options)
     : options_(options),
@@ -106,4 +106,4 @@ void BlockBuilder::Add(const Slice& key, const Slice& value) {
   counter_++;
 }
 
-}  // namespace leveldb
+}  // namespace lsbmdb

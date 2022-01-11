@@ -10,7 +10,7 @@
 #include "util/coding.h"
 #include "lsbm/params.h"
 #include <iostream>
-namespace leveldb {
+namespace lsbmdb {
 
 struct TableAndFile {
   RandomAccessFile* file;
@@ -251,4 +251,4 @@ Status TableCache::FindTable(uint64_t file_number, uint64_t file_size,
 
 
 
-}  // namespace leveldb
+}  // namespace lsbmdb

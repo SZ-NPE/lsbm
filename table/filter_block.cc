@@ -7,7 +7,7 @@
 #include "lsbm/filter_policy.h"
 #include "util/coding.h"
 
-namespace leveldb {
+namespace lsbmdb {
 
 // See doc/table_format.txt for an explanation of the filter block format.
 

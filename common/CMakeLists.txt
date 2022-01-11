@@ -1,5 +1,5 @@
 
-add_library(db_common 
+add_library(db_common STATIC 
 		dbformat.cc
 		filename.cc
 		generator.cc

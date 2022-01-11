@@ -7,7 +7,7 @@
 
 #include <stddef.h>
 
-namespace leveldb {
+namespace lsbmdb {
 
 class Cache;
 class Comparator;
@@ -196,6 +196,6 @@ struct WriteOptions {
   }
 };
 
-}  // namespace leveldb
+}  // namespace lsbmdb
 
 #endif  // STORAGE_LEVELDB_INCLUDE_OPTIONS_H_

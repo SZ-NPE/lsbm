@@ -17,7 +17,7 @@
 #include "port/thread_annotations.h"
 #include "port/port_posix.h"
 
-namespace leveldb {
+namespace lsbmdb {
 
 class MemTable;
 class TableCache;
@@ -186,6 +186,6 @@ extern Options SanitizeOptions(const std::string& db,
                                const InternalFilterPolicy* ipolicy,
                                const Options& src);
 
-}  // namespace leveldb
+}  // namespace lsbmdb
 
 #endif  // STORAGE_LEVELDB_DB_DB_IMPL_H_

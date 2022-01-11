@@ -39,7 +39,7 @@
 
 using namespace std;
 
-namespace leveldb {
+namespace lsbmdb {
 
 const int kNumNonTableCacheFiles = 10;
 
@@ -167,7 +167,7 @@ DBImpl::~DBImpl() {
   // Wait for background work to finish
   mutex_.Lock();
   shutting_down_.Release_Store(this);  // Any non-NULL value is ok
-  while (bg_compaction_scheduled_ && leveldb::config::run_compaction) {
+  while (bg_compaction_scheduled_ && lsbmdb::config::run_compaction) {
     bg_cv_.Wait();
   }
   mutex_.Unlock();
@@ -709,7 +709,7 @@ void DBImpl::BackgroundCompaction() {
     return;
   }
 
-  leveldb::Compaction* c;
+  lsbmdb::Compaction* c;
   c = versions_->PickCompaction();
 
 
@@ -1210,7 +1210,7 @@ Status DBImpl::Get(const ReadOptions& options,
 		  value = (std::string*)options_.key_cache_->Value(keyhandle);
 		  options_.key_cache_->Release(keyhandle);
 		  cached++;
-		  leveldb::updateCache_stat(1,0,0,0,(double)options_.key_cache_->Used()/options_.key_cache_->getCapacity(),0);
+		  lsbmdb::updateCache_stat(1,0,0,0,(double)options_.key_cache_->Used()/options_.key_cache_->getCapacity(),0);
 		  return Status::OK();
 	  }
   }
@@ -1597,4 +1597,4 @@ Status DestroyDB(const std::string& dbname, const Options& options) {
   return result;
 }
 
-}  // namespace leveldb
+}  // namespace lsbmdb

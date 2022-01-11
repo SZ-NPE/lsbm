@@ -15,7 +15,7 @@
 #include "lsbm/table.h"
 #include "port/port.h"
 
-namespace leveldb {
+namespace lsbmdb {
 
 class Env;
 
@@ -89,6 +89,6 @@ class TableCache {
 
 };
 
-}  // namespace leveldb
+}  // namespace lsbmdb
 
 #endif  // STORAGE_LEVELDB_DB_TABLE_CACHE_H_

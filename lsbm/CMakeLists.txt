@@ -1,7 +1,7 @@
 
 include_directories(../common)
 
-add_library(db_lsmcb 
+add_library(db_lsmcb STATIC
 		builder.cc
 		db_impl.cc
 		db_iter.cc

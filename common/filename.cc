@@ -11,7 +11,7 @@
 #include "lsbm/env.h"
 #include "util/logging.h"
 
-namespace leveldb {
+namespace lsbmdb {
 
 // A utility routine: write "data" to the named file and Sync() it.
 extern Status WriteStringToFileSync(Env* env, const Slice& data,
@@ -161,4 +161,4 @@ Status SetCurrentSMFile(Env* env, const std::string& dbname,
   return s;
 }
 
-}  // namespace leveldb
+}  // namespace lsbmdb

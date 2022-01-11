@@ -10,7 +10,7 @@
 #include <stdint.h>
 #include "lsbm/slice.h"
 
-namespace leveldb {
+namespace lsbmdb {
 
 struct Options;
 
@@ -52,6 +52,6 @@ class BlockBuilder {
   void operator=(const BlockBuilder&);
 };
 
-}  // namespace leveldb
+}  // namespace lsbmdb
 
 #endif  // STORAGE_LEVELDB_TABLE_BLOCK_BUILDER_H_

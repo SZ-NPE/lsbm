@@ -1,5 +1,5 @@
 
-add_library(util 
+add_library(util STATIC
 		arena.cc
 		bloom.cc
 		cache_stat.cc

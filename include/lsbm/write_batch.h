@@ -24,7 +24,7 @@
 #include <string>
 #include "lsbm/status.h"
 
-namespace leveldb {
+namespace lsbmdb {
 
 class Slice;
 
@@ -59,6 +59,6 @@ class WriteBatch {
   // Intentionally copyable
 };
 
-}  // namespace leveldb
+}  // namespace lsbmdb
 
 #endif  // STORAGE_LEVELDB_INCLUDE_WRITE_BATCH_H_

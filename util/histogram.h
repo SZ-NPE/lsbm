@@ -8,7 +8,7 @@
 #include <string>
 #include "port/port.h"
 
-namespace leveldb {
+namespace lsbmdb {
 
 class Histogram {
  public:
@@ -42,6 +42,6 @@ class Histogram {
   double buckets_[kNumBuckets];
 };
 
-}  // namespace leveldb
+}  // namespace lsbmdb
 
 #endif  // STORAGE_LEVELDB_UTIL_HISTOGRAM_H_

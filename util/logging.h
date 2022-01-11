@@ -13,7 +13,7 @@
 #include <string>
 #include "port/port.h"
 
-namespace leveldb {
+namespace lsbmdb {
 
 class Slice;
 class WritableFile;
@@ -42,6 +42,6 @@ extern bool ConsumeChar(Slice* in, char c);
 // unspecified state.
 extern bool ConsumeDecimalNumber(Slice* in, uint64_t* val);
 
-}  // namespace leveldb
+}  // namespace lsbmdb
 
 #endif  // STORAGE_LEVELDB_UTIL_LOGGING_H_

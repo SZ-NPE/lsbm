@@ -13,7 +13,7 @@
 #include "lsbm/iterator.h"
 #include "lsbm/table_builder.h"
 
-namespace leveldb {
+namespace lsbmdb {
 
 Status BuildTable(const std::string& dbname,
                   Env* env,
@@ -95,4 +95,4 @@ Status BuildTable(const std::string& dbname,
   return s;
 }
 
-}  // namespace leveldb
+}  // namespace lsbmdb

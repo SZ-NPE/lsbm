@@ -1,5 +1,5 @@
 
-add_library(table
+add_library(table STATIC
 		block_builder.cc
 		block.cc
 		filter_block.cc

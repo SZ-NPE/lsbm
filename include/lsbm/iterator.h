@@ -18,7 +18,7 @@
 #include "lsbm/slice.h"
 #include "lsbm/status.h"
 
-namespace leveldb {
+namespace lsbmdb {
 
 
 class Iterator {
@@ -96,6 +96,6 @@ extern Iterator* NewEmptyIterator();
 // Return an empty iterator with the specified status.
 extern Iterator* NewErrorIterator(const Status& status);
 
-}  // namespace leveldb
+}  // namespace lsbmdb
 
 #endif  // STORAGE_LEVELDB_INCLUDE_ITERATOR_H_

@@ -10,7 +10,7 @@
 #include "lsbm/iterator.h"
 #include "lsbm/table.h"
 
-namespace leveldb {
+namespace lsbmdb {
 
 struct BlockContents;
 class Comparator;
@@ -55,6 +55,6 @@ class Block {
   class Iter;
 };
 
-}  // namespace leveldb
+}  // namespace lsbmdb
 
 #endif  // STORAGE_LEVELDB_TABLE_BLOCK_H_

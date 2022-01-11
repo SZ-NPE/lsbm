@@ -19,7 +19,7 @@
 #include <stdint.h>
 #include "lsbm/status.h"
 
-namespace leveldb {
+namespace lsbmdb {
 
 class FileLock;
 class Logger;
@@ -336,6 +336,6 @@ class EnvWrapper : public Env {
   Env* target_;
 };
 
-}  // namespace leveldb
+}  // namespace lsbmdb
 
 #endif  // STORAGE_LEVELDB_INCLUDE_ENV_H_

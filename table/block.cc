@@ -13,7 +13,7 @@
 #include "util/coding.h"
 #include "util/logging.h"
 
-namespace leveldb {
+namespace lsbmdb {
 
 inline uint32_t Block::NumRestarts() const {
   assert(size_ >= sizeof(uint32_t));
@@ -328,4 +328,4 @@ Iterator* Block::NewIterator(const Comparator* cmp) {
   }
 }
 
-}  // namespace leveldb
+}  // namespace lsbmdb

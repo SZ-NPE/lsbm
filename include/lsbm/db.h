@@ -10,7 +10,7 @@
 #include "lsbm/iterator.h"
 #include "lsbm/options.h"
 
-namespace leveldb {
+namespace lsbmdb {
 
 // Update Makefile if you change these
 static const int kMajorVersion = 1;
@@ -131,6 +131,6 @@ Status DestroyDB(const std::string& name, const Options& options);
 // on a database that contains important information.
 Status RepairDB(const std::string& dbname, const Options& options);
 
-}  // namespace leveldb
+}  // namespace lsbmdb
 
 #endif  // STORAGE_LEVELDB_INCLUDE_DB_H_

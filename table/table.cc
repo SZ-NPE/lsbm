@@ -21,7 +21,7 @@
 #include "util/coding.h"
 #include "util/cache_stat.h"
 
-namespace leveldb {
+namespace lsbmdb {
 
 struct Table::Rep {
   ~Rep() {
@@ -293,7 +293,7 @@ Iterator* Table::BlockReader(void* arg,
   }
 
   if(!runtime::isWarmingUp()&&options.fill_cache){
-	  leveldb::updateCache_stat(0,block_cache_served,oscache_served,hdd_served,0,blockcache_used);
+	  lsbmdb::updateCache_stat(0,block_cache_served,oscache_served,hdd_served,0,blockcache_used);
   }
 
   return iter;
@@ -445,7 +445,7 @@ Status Table::EvictBlockCache(){
 	}
     delete iiter;
 
-    if(this->num_cached_>=leveldb::config::hot_file_threshold)
+    if(this->num_cached_>=lsbmdb::config::hot_file_threshold)
     {
       fprintf(stderr,"evicted file: %ld, %ld blocks evicted\n",rep_->filenumber,this->num_cached_);
     }
@@ -537,4 +537,4 @@ uint64_t Table::ApproximateOffsetOf(const Slice& key) const {
   return result;
 }
 
-}  // namespace leveldb
+}  // namespace lsbmdb

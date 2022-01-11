@@ -7,7 +7,7 @@
 #include "lsbm/comparator.h"
 #include "lsbm/env.h"
 
-namespace leveldb {
+namespace lsbmdb {
 
 Options::Options()
     : comparator(BytewiseComparator()),
@@ -26,4 +26,4 @@ Options::Options()
 }
 
 
-}  // namespace leveldb
+}  // namespace lsbmdb

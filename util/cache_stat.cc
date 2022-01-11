@@ -11,7 +11,7 @@
 
 #include "lsbm/params.h"
 
-namespace leveldb{
+namespace lsbmdb{
 
 
 static int total_served = 0;

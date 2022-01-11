@@ -9,7 +9,7 @@
 
 #include "lsbm/params.h"
 
-namespace leveldb{
+namespace lsbmdb{
 
 namespace config{
 

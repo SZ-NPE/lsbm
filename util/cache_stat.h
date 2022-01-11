@@ -8,7 +8,7 @@
 #ifndef UTIL_CACHE_STAT_H_
 #define UTIL_CACHE_STAT_H_
 
-namespace leveldb{
+namespace lsbmdb{
 
 
 	void updateCache_stat(int kvcache, int blockcache, int oscache, int hdd, double,double);

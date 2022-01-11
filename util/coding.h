@@ -16,7 +16,7 @@
 #include "lsbm/slice.h"
 #include "port/port.h"
 
-namespace leveldb {
+namespace lsbmdb {
 
 // Standard Put... routines append to a string
 extern void PutFixed32(std::string* dst, uint32_t value);
@@ -99,6 +99,6 @@ inline const char* GetVarint32Ptr(const char* p,
   return GetVarint32PtrFallback(p, limit, value);
 }
 
-}  // namespace leveldb
+}  // namespace lsbmdb
 
 #endif  // STORAGE_LEVELDB_UTIL_CODING_H_

@@ -10,7 +10,7 @@
 #include "dbformat.h"
 #include "lsbm/db.h"
 
-namespace leveldb {
+namespace lsbmdb {
 
 class DBImpl;
 
@@ -24,6 +24,6 @@ extern Iterator* NewDBIterator(
     SequenceNumber sequence,
     uint32_t seed);
 
-}  // namespace leveldb
+}  // namespace lsbmdb
 
 #endif  // STORAGE_LEVELDB_DB_DB_ITER_H_

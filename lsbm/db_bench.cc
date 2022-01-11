@@ -27,7 +27,7 @@
 #include "util/testutil.h"
 
 using namespace std;
-using namespace leveldb;
+using namespace lsbmdb;
 // Comma-separated list of operations to run in the specified order
 //   Actual benchmarks:
 //      fillseq       -- write N values in sequential key order in async mode
@@ -120,7 +120,7 @@ static char *FLAGS_read_ycsb_workload = NULL;
 
 static int FLAGS_range_size = 10000;
 
-static leveldb::port::Mutex range_query_mu_;
+static lsbmdb::port::Mutex range_query_mu_;
 static int range_query_completed_ = 0;
 static int last_range_query_ = 0;
 static int last_range_count_ = 0;
@@ -151,12 +151,12 @@ static int monitor_interval = -1; // microseconds
 static bool first_monitor_interval = true;
 static FILE *monitor_log = stdout;
 
-static leveldb::Histogram intv_read_hist_;
-static leveldb::Histogram intv_write_hist_;
-static leveldb::Histogram intv_range_hist_;
+static lsbmdb::Histogram intv_read_hist_;
+static lsbmdb::Histogram intv_write_hist_;
+static lsbmdb::Histogram intv_range_hist_;
 static double intv_start_;
-static leveldb::port::Mutex intv_mu_;
-static leveldb::port::Mutex read_mu_;
+static lsbmdb::port::Mutex intv_mu_;
+static lsbmdb::port::Mutex read_mu_;
 
 static int hot_ratio = 1;
 
@@ -179,7 +179,7 @@ static bool FLAGS_range_warmup = true;
 /************* Extened Flags (END) *****************/
 static bool printstats_ = true;
 
-namespace leveldb
+namespace lsbmdb
 {
 
   namespace
@@ -909,7 +909,7 @@ namespace leveldb
       options.write_buffer_size = FLAGS_write_buffer_size;
       options.max_open_files = FLAGS_open_files;
       options.filter_policy = filter_policy_;
-      options.compression = leveldb::kNoCompression;
+      options.compression = lsbmdb::kNoCompression;
 
       Status s = DB::Open(options, FLAGS_db, &db_);
       if (!s.ok())
@@ -1025,7 +1025,7 @@ namespace leveldb
     void WaitForWarmUp()
     {
       // printf("enter wait %d\n",type);
-      while (leveldb::runtime::needWarmUp() && !leveldb::runtime::doneWarmUp())
+      while (lsbmdb::runtime::needWarmUp() && !lsbmdb::runtime::doneWarmUp())
       {
         Env::Default()->SleepForMicroseconds(100000);
       }
@@ -1109,7 +1109,7 @@ namespace leveldb
       }
       /*
         if(cache_==NULL&&key_cache_==NULL){
-          leveldb::runtime::need_warm_up = false;
+          lsbmdb::runtime::need_warm_up = false;
         }
       */
       // 噪点数据比例，不在有效读取范围内数据的比例
@@ -1331,7 +1331,7 @@ namespace leveldb
     // 	}
     // /*
     // 	if(cache_==NULL&&key_cache_==NULL){
-    // 		leveldb::runtime::need_warm_up = false;
+    // 		lsbmdb::runtime::need_warm_up = false;
     // 	}
     // */
     // 	bool startwarmup = false;
@@ -1932,7 +1932,7 @@ namespace leveldb
 
       if (cache_ == NULL && key_cache_ == NULL)
       {
-        leveldb::runtime::need_warm_up = false;
+        lsbmdb::runtime::need_warm_up = false;
       }
 
       // 默认不缓存预热
@@ -2097,14 +2097,14 @@ namespace leveldb
       }*/
   };
 
-} // namespace leveldb
+} // namespace lsbmdb
 
 int main(int argc, char **argv)
 {
 
   runtime::resetTimer();
-  // FLAGS_write_buffer_size = leveldb::Options().write_buffer_size;
-  // FLAGS_open_files = leveldb::Options().max_open_files;
+  // FLAGS_write_buffer_size = lsbmdb::Options().write_buffer_size;
+  // FLAGS_open_files = lsbmdb::Options().max_open_files;
   for (int i = 1; i < argc; i++)
   {
     double d;
@@ -2116,7 +2116,7 @@ int main(int argc, char **argv)
     int64_t n64;
     char junk;
     // 两种 benchmark：seperate 和 mix
-    if (leveldb::Slice(argv[i]).starts_with("--benchmarks="))
+    if (lsbmdb::Slice(argv[i]).starts_with("--benchmarks="))
     {
       FLAGS_benchmarks = argv[i] + 13;
     }
@@ -2174,7 +2174,7 @@ int main(int argc, char **argv)
       // KV 缓存大小，默认为 0
       // 传入参数以 MB 为单位
       FLAGS_key_cache_size = (uint64_t)n * 1024 * 1024;
-      leveldb::config::key_cache_size = FLAGS_key_cache_size;
+      lsbmdb::config::key_cache_size = FLAGS_key_cache_size;
     }
     else if (sscanf(argv[i], "--bloom_bits=%d%c", &n, &junk) == 1)
     {
@@ -2186,13 +2186,13 @@ int main(int argc, char **argv)
     {
       // 如果  bloom 过滤器位数 为 20，该值就大约为 15
       // 如果 设为 10，大约就为 7
-      leveldb::config::bloom_bits_use = n;
+      lsbmdb::config::bloom_bits_use = n;
     }
     else if (sscanf(argv[i], "--cached_block_threshold=%d%c", &n, &junk) == 1)
     {
       // 默认 8MB/4KB = 2048
       // 实际仿佛没有使用
-      leveldb::config::num_blocks_cached_threshold = n;
+      lsbmdb::config::num_blocks_cached_threshold = n;
     }
     else if (sscanf(argv[i], "--open_files=%d%c", &n, &junk) == 1)
     {
@@ -2204,7 +2204,7 @@ int main(int argc, char **argv)
     {
       // DB 路径
       FLAGS_db = argv[i] + 5;
-      leveldb::config::db_path = FLAGS_db;
+      lsbmdb::config::db_path = FLAGS_db;
     }
     else if (sscanf(argv[i], "--key_from=%ld%c", &n64, &junk) == 1)
     {
@@ -2246,13 +2246,13 @@ int main(int argc, char **argv)
     {
       // 目标文件大小，默认 8MB
       // 我们的设置默认 2MB
-      leveldb::config::kTargetFileSize = n * 1024 * 1024; // in MiB
+      lsbmdb::config::kTargetFileSize = n * 1024 * 1024; // in MiB
     }
     else if (sscanf(argv[i], "--level0_size=%d%c", &n, &junk) == 1)
     {
       // Level0 大小 默认 100M
       // 我们的设置 Level0 最多四个文件
-      leveldb::config::kL0_size = n;
+      lsbmdb::config::kL0_size = n;
     }
     else if (sscanf(argv[i], "--countdown=%lf%c", &d, &junk) == 1)
     {
@@ -2267,35 +2267,35 @@ int main(int argc, char **argv)
     else if (sscanf(argv[i], "--run_compaction=%d%c", &n, &junk) == 1)
     {
       // 是否要开启 Compaction
-      leveldb::config::run_compaction = n;
+      lsbmdb::config::run_compaction = n;
     }
     else if (sscanf(argv[i], "--print_version_info=%d%c", &n, &junk) == 1)
     {
       // 是否输出版本信息
-      leveldb::runtime::print_version_info = n;
+      lsbmdb::runtime::print_version_info = n;
     }
     else if (sscanf(argv[i], "--print_compaction_buffer=%d%c", &n, &junk) == 1)
     {
       // 是否输出 compaction buffer 的信息
-      leveldb::runtime::print_compaction_buffer = n;
+      lsbmdb::runtime::print_compaction_buffer = n;
     }
     else if (sscanf(argv[i], "--print_dash=%d%c", &n, &junk) == 1)
     {
       // dash 信息是否输出
-      leveldb::runtime::print_dash = n;
+      lsbmdb::runtime::print_dash = n;
     }
     else if (sscanf(argv[i], "--pre_caching=%d%c", &n, &junk) == 1)
     {
       // 是否预先缓存
-      leveldb::runtime::pre_caching = n;
+      lsbmdb::runtime::pre_caching = n;
     }
     else if (sscanf(argv[i], "--warmup=%d%c", &n, &junk) == 1)
     {
       // 是否需要 warmup
-      leveldb::runtime::need_warm_up = n;
-      if (leveldb::runtime::needWarmUp())
+      lsbmdb::runtime::need_warm_up = n;
+      if (lsbmdb::runtime::needWarmUp())
       {
-        leveldb::runtime::warm_up_status = 0;
+        lsbmdb::runtime::warm_up_status = 0;
       }
       if (n > 1)
       {
@@ -2376,7 +2376,7 @@ int main(int argc, char **argv)
     else if (sscanf(argv[i], "--hitratio_interval=%d%c", &n, &junk) == 1)
     {
       // 命中率
-      leveldb::runtime::hitratio_interval = n;
+      lsbmdb::runtime::hitratio_interval = n;
     }
     else if (sscanf(argv[i], "--rw_interval=%d%c", &n, &junk) == 1)
     {
@@ -2391,50 +2391,50 @@ int main(int argc, char **argv)
     else if (sscanf(argv[i], "--max_print_level=%d%c", &n, &junk) == 1)
     {
       // 最大的输出的 level
-      leveldb::runtime::max_print_level = n;
+      lsbmdb::runtime::max_print_level = n;
     }
     else if (sscanf(argv[i], "--hot_file_threshold=%d%c", &n, &junk) == 1)
     {
       // 热文件阈值 2000
-      leveldb::config::hot_file_threshold = n;
+      lsbmdb::config::hot_file_threshold = n;
     }
     else if (sscanf(argv[i], "--compaction_buffer_length=%d%c", &n, &junk) == 1)
     {
       // compaction buffer 的长度
-      leveldb::runtime::compaction_buffer_length[n % 10] = n / 10;
+      lsbmdb::runtime::compaction_buffer_length[n % 10] = n / 10;
     }
     else if (sscanf(argv[i], "--compaction_buffer_use_length=%d%c", &n, &junk) == 1)
     {
       // 实际使用的长度
-      leveldb::runtime::compaction_buffer_use_length[n % 10] = n / 10;
+      lsbmdb::runtime::compaction_buffer_use_length[n % 10] = n / 10;
     }
     else if (sscanf(argv[i], "--compaction_buffer_management_interval=%d%c", &n, &junk) == 1)
     {
       // 间隔
-      leveldb::runtime::compaction_buffer_management_interval[1] = n;
-      leveldb::runtime::compaction_buffer_management_interval[2] = n * 10;
-      leveldb::runtime::compaction_buffer_management_interval[3] = n * 10 * 10;
+      lsbmdb::runtime::compaction_buffer_management_interval[1] = n;
+      lsbmdb::runtime::compaction_buffer_management_interval[2] = n * 10;
+      lsbmdb::runtime::compaction_buffer_management_interval[3] = n * 10 * 10;
     }
     else if (sscanf(argv[i], "--preload_metadata=%d%c", &n, &junk) == 1)
     {
       //预加载元数据，默认 false
-      leveldb::config::preload_metadata = n;
+      lsbmdb::config::preload_metadata = n;
     }
     else if (sscanf(argv[i], "--buffered_merge=%d%c", &n, &junk) == 1)
     {
       // 是否开启buffered_merge，默认 true
-      leveldb::config::buffered_merge = n;
+      lsbmdb::config::buffered_merge = n;
     }
     else if (sscanf(argv[i], "--data_merged_each_round=%d%c", &n, &junk) == 1)
     {
-      leveldb::config::data_merged_each_round = n;
+      lsbmdb::config::data_merged_each_round = n;
     }
     else if (sscanf(argv[i], "--compaction_min_score=%lf%c", &d, &junk) == 1)
     {
       if (d < 1)
       {
         // 触发 compaction 的时机控制
-        leveldb::runtime::compaction_min_score = d;
+        lsbmdb::runtime::compaction_min_score = d;
       }
     }
     else
@@ -2455,7 +2455,7 @@ int main(int argc, char **argv)
     printf("please specify database path!\n");
     exit(0);
   }
-  leveldb::Benchmark benchmark;
+  lsbmdb::Benchmark benchmark;
   benchmark.Run();
 
   return 0;

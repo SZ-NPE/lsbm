@@ -28,7 +28,7 @@
 #include <cmath>
 
 #define digit_base 1024
-namespace leveldb {
+namespace lsbmdb {
 
 namespace log { class Writer; }
 
@@ -459,7 +459,7 @@ class VersionSet {
   // Returns true iff some level needs a compaction.
   bool NeedsCompaction() const {
     Version* v = current_;
-    return (v->compaction_score_ > leveldb::runtime::compaction_min_score||v->compaction_type_==CompactionType::INTERNAL_ROLLING_MERGE);
+    return (v->compaction_score_ > lsbmdb::runtime::compaction_min_score||v->compaction_type_==CompactionType::INTERNAL_ROLLING_MERGE);
   }
 
   // Add all files listed in any live version to *live.
@@ -497,8 +497,8 @@ class VersionSet {
   };
 
   //teng: for two phase compaction
-  virtual Status MoveLevelDown(int level, leveldb::port::Mutex *mutex_)=0;
-  virtual Status ClearLevel(int level, leveldb::port::Mutex *mutex_)=0;
+  virtual Status MoveLevelDown(int level, lsbmdb::port::Mutex *mutex_)=0;
+  virtual Status ClearLevel(int level, lsbmdb::port::Mutex *mutex_)=0;
 
   virtual void printCurVersion() = 0;
 
@@ -671,6 +671,6 @@ class Compaction {
 
 };
 
-}  // namespace leveldb
+}  // namespace lsbmdb
 
 #endif  // STORAGE_LEVELDB_DB_VERSION_SET_H_

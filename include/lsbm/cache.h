@@ -21,7 +21,7 @@
 #include <stdint.h>
 #include "lsbm/slice.h"
 
-namespace leveldb {
+namespace lsbmdb {
 
 class Cache;
 
@@ -103,6 +103,6 @@ class Cache {
   void operator=(const Cache&);
 };
 
-}  // namespace leveldb
+}  // namespace lsbmdb
 
 #endif  // STORAGE_LEVELDB_UTIL_CACHE_H_

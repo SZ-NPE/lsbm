@@ -24,7 +24,7 @@
 
 
 
-namespace leveldb {
+namespace lsbmdb {
 
 
 struct TableBuilder::Rep {
@@ -223,7 +223,7 @@ void TableBuilder::WriteBlock(BlockBuilder* block, BlockHandle* handle, bool cac
       		char *chs = new char[block_contents.size()];
       		memcpy(chs,block_contents.data(),block_contents.size());
       		Block *blockobj = new Block(chs,block_contents.size(),true);
-      		leveldb::Cache::Handle *handle = r->options.block_cache->Insert(key,(void*)blockobj,blockobj->size(),&DeleteCachedBlock_builder);
+      		lsbmdb::Cache::Handle *handle = r->options.block_cache->Insert(key,(void*)blockobj,blockobj->size(),&DeleteCachedBlock_builder);
       		r->options.block_cache->Release(handle);
       		//delete blockobj;
       }
@@ -329,4 +329,4 @@ uint64_t TableBuilder::FileSize() const {
   return rep_->offset;
 }
 
-}  // namespace leveldb
+}  // namespace lsbmdb

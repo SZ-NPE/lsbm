@@ -20,7 +20,7 @@
 #include <string.h>
 #include <string>
 
-namespace leveldb {
+namespace lsbmdb {
 
 class Slice {
  public:
@@ -103,7 +103,7 @@ inline int Slice::compare(const Slice& b) const {
   return r;
 }
 
-}  // namespace leveldb
+}  // namespace lsbmdb
 
 
 #endif  // STORAGE_LEVELDB_INCLUDE_SLICE_H_

@@ -7,7 +7,7 @@
 #include "version_set.h"
 #include "util/coding.h"
 
-namespace leveldb {
+namespace lsbmdb {
 
 // Tag numbers for serialized VersionEdit.  These numbers are written to
 // disk and should not be changed.
@@ -265,4 +265,4 @@ SortedTable *VersionEdit::CloneSortedTable(SortedTable *original){
 	return cloned;
 }
 
-}  // namespace leveldb
+}  // namespace lsbmdb

@@ -11,7 +11,7 @@
 
 #include "dbformat.h"
 
-namespace leveldb {
+namespace lsbmdb {
 
 class VersionSet;
 class SortedTable;
@@ -127,6 +127,6 @@ class VersionEdit {
   std::vector< std::pair<int, FileMetaData> > new_files_[4];
 };
 
-}  // namespace leveldb
+}  // namespace lsbmdb
 
 #endif  // STORAGE_LEVELDB_DB_VERSION_EDIT_H_

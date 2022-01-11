@@ -16,7 +16,7 @@
 #include <string>
 #include "lsbm/slice.h"
 
-namespace leveldb {
+namespace lsbmdb {
 
 class Status {
  public:
@@ -108,6 +108,6 @@ inline void Status::operator=(const Status& s) {
   }
 }
 
-}  // namespace leveldb
+}  // namespace lsbmdb
 
 #endif  // STORAGE_LEVELDB_INCLUDE_STATUS_H_

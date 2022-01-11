@@ -12,7 +12,7 @@
 #define BLKSIZE 4096
 /************************** Configuration *****************************/
 
-namespace leveldb {
+namespace lsbmdb {
 
 namespace config {
 

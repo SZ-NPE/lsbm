@@ -19,7 +19,7 @@
 #include "lsbm/options.h"
 #include "lsbm/status.h"
 
-namespace leveldb {
+namespace lsbmdb {
 
 class BlockBuilder;
 class BlockHandle;
@@ -90,6 +90,6 @@ class TableBuilder {
   void operator=(const TableBuilder&);
 };
 
-}  // namespace leveldb
+}  // namespace lsbmdb
 
 #endif  // STORAGE_LEVELDB_INCLUDE_TABLE_BUILDER_H_

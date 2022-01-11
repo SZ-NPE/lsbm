@@ -12,7 +12,7 @@
 #include "lsbm/db.h"
 #include "util/arena.h"
 
-namespace leveldb {
+namespace lsbmdb {
 
 class InternalKeyComparator;
 class Mutex;
@@ -87,6 +87,6 @@ class MemTable {
   void operator=(const MemTable&);
 };
 
-}  // namespace leveldb
+}  // namespace lsbmdb
 
 #endif  // STORAGE_LEVELDB_DB_MEMTABLE_H_

@@ -11,7 +11,7 @@
 #include "lsbm/slice.h"
 #include "lsbm/status.h"
 
-namespace leveldb {
+namespace lsbmdb {
 
 class SequentialFile;
 
@@ -103,6 +103,6 @@ class Reader {
 };
 
 }  // namespace log
-}  // namespace leveldb
+}  // namespace lsbmdb
 
 #endif  // STORAGE_LEVELDB_DB_LOG_READER_H_
