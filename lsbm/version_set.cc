@@ -8,6 +8,7 @@
 #include <iostream>
 #include <algorithm>
 #include <stdio.h>
+#include <cmath>
 #include "leveldb/env.h"
 #include "leveldb/table_builder.h"
 #include "table/merger.h"

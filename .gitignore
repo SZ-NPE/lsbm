@@ -10,3 +10,4 @@ leveldbutil
 /.settings/
 .cproject
 .project
+build/
