@@ -108,6 +108,8 @@ class DB {
   // use "snapshot" after this call.
   virtual void ReleaseSnapshot(const Snapshot* snapshot) = 0;
 
+  virtual bool GetProperty(const Slice& property, std::string* value) = 0;
+
   // DB implementations can export properties about their state
   // via this method.  If "property" is a valid property understood by this
   // DB implementation, fills "*value" with its current value and returns
