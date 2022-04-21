@@ -958,13 +958,12 @@ Status DBImpl::DoCompactionWork(CompactionState* compact) {
   		 std::vector<Slice *> tempcr;
   		 for(int j=0;j<compactinfo->num_input_files(i);j++){
   			 FileMetaData *file = compactinfo->input(i,j);
+         // 读取单个表对应的 Block 在 Cache 中对应的范围
   			 this->table_cache_->GetKeyRangeCached(file->number,file->file_size,&tempcr);
   		 }
   		 cachedRanges.push_back(tempcr);
   	  }
     }
-
-  //
   Iterator* input = versions_->MakeInputIterator(compact->compaction);
   input->SeekToFirst();
   Status status;
@@ -1038,10 +1037,14 @@ Status DBImpl::DoCompactionWork(CompactionState* compact) {
         if (!status.ok()) {
           break;
         }
+
+        // 如果开启了缓存预热，且当前 level 大于 0，且启用了缓存
         if(runtime::pre_caching&&compact->compaction->level()>0&&options_.block_cache){
-			compact->builder->cachedRanges = &cachedRanges;
-			compact->builder->rangeCursor[0] = 0;
-			compact->builder->rangeCursor[1] = 0;
+
+          // 将对应的热块范围传递给 builder
+          compact->builder->cachedRanges = &cachedRanges;
+          compact->builder->rangeCursor[0] = 0;
+          compact->builder->rangeCursor[1] = 0;
         }
 
 
@@ -1050,12 +1053,13 @@ Status DBImpl::DoCompactionWork(CompactionState* compact) {
         compact->current_output()->smallest.DecodeFrom(key);
       }
       compact->current_output()->largest.DecodeFrom(key);
+      // Add 的过程中会执行对应的块的缓存的范围匹配和替换
       compact->builder->Add(key, input->value());
 
       // Close output file if it is big enough
       if (compact->builder->FileSize() >=
           compact->compaction->MaxOutputFileSize()) {
-
+      // 替换的缓存的个数
     	cached_block_number += compact->builder->cached_block_number;
         status = FinishCompactionOutputFile(compact, input);
         if (!status.ok()) {
@@ -1082,6 +1086,7 @@ Status DBImpl::DoCompactionWork(CompactionState* compact) {
 
   CompactionStats stats;
   stats.micros = env_->NowMicros() - start_micros - imm_micros;
+  stats.imm_micros = imm_micros;
   for (int which = 0; which < 2; which++) {
     for (int i = 0; i < compact->compaction->num_input_files(which); i++) {
       stats.bytes_read += compact->compaction->input(which, i)->file_size;
@@ -1100,6 +1105,8 @@ Status DBImpl::DoCompactionWork(CompactionState* compact) {
   if (!status.ok()) {
     RecordBackgroundError(status);
   }
+
+  // 输出缓存替换的 debug 信息，并释放空间
   //TODO change for pre-caching
   if(runtime::pre_caching&&compact->compaction->level()>0&&options_.block_cache){
 	 fprintf(stderr,"pre-caching: %ld %ld %f\n",cachedRanges[0].size()+cachedRanges[1].size(),cached_block_number,options_.block_cache->Percent());
@@ -1115,6 +1122,39 @@ Status DBImpl::DoCompactionWork(CompactionState* compact) {
 	 cachedRanges.clear();
   }
   return status;
+}
+
+bool DBImpl::GetProperty(const Slice& property, std::string* value) {
+  value->clear();
+
+  MutexLock l(&mutex_); // 这里一开始就去拿到锁
+  Slice in = property;
+  Slice prefix("leveldb.");
+  if (!in.starts_with(prefix)) return false;
+  in.remove_prefix(prefix.size());
+
+  if (in == "stats") {
+    char buf[400];
+    std::snprintf(buf, sizeof(buf),
+                  "                               Compactions\n"
+                  "Level  Files Size(MB) Time(sec) imm_flush(sec) Read(MB) Write(MB)\n"
+                  "------------------------------------------------------------------\n");
+    value->append(buf);
+    for (int level = 0; level < config::kNumLevels; level++) {
+      int files = versions_->NumLevelFiles(level);
+      if (stats_[level].micros > 0 || files > 0) {
+        std::snprintf(buf, sizeof(buf), "%3d %8d %8.0f %9.0f %9.0f %8.0f %9.0f\n",
+                      level, files, versions_->NumLevelBytes(level) / 1048576.0,
+                      stats_[level].micros / 1e6,
+                      stats_[level].imm_micros / 1e6,
+                      stats_[level].bytes_read / 1048576.0,
+                      stats_[level].bytes_written / 1048576.0);
+        value->append(buf);
+      }
+    }
+    return true;
+  }
+  return false;
 }
 
 namespace {

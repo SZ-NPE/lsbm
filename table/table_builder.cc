@@ -113,7 +113,8 @@ void TableBuilder::Add(const Slice& key, const Slice& value) {
     //assert(r->options.comparator->Compare(key, Slice(r->last_key)) > 0);
   }else{
 	//fist key of the file is also the first key of the block
-	r->first_key.assign(key.data(),key.size());
+    // 设置 first key
+	  r->first_key.assign(key.data(),key.size());
   }
 
   //also indicate this key is the first key of this block
@@ -136,6 +137,7 @@ void TableBuilder::Add(const Slice& key, const Slice& value) {
 
   const size_t estimated_block_size = r->data_block.CurrentSizeEstimate();
   if (estimated_block_size >= r->options.block_size) {
+    // flush
     Flush(pre_caching);
   }
 }
@@ -146,6 +148,7 @@ void TableBuilder::Flush(bool cache) {
   if (!ok()) return;
   if (r->data_block.empty()) return;
   assert(!r->pending_index_entry);
+  // 写入对应的数据块
   WriteBlock(&r->data_block, &r->pending_handle,cache);
   if (ok()) {
     r->pending_index_entry = true;
@@ -192,16 +195,24 @@ void TableBuilder::WriteBlock(BlockBuilder* block, BlockHandle* handle, bool cac
       break;
     }
   }
+
+  // 如果开启了缓存替换
   //for pre-fetching
   if(cache&&r->options.block_cache&&cachedRanges){
+
       bool shouldCache = false;
-      for(int w = 0;w<2;w++){
-      	  for(int i=rangeCursor[w];i<(*cachedRanges)[w].size();i++){
+      for(int w = 0; w<2; w++){
+
+          // 遍历对应的需要执行替换的缓存的范围
+      	  for(int i = rangeCursor[w]; i < (*cachedRanges)[w].size(); i++){
       		  Slice *s = (*cachedRanges)[w][i];
+
+            // 如果当前块的第一个 Key 大于对应的缓存块的上界，即超出范围
       		  //current writing block has passed this range, should never overlap with any coming blocks
       		  if(r->options.comparator->Compare(r->first_key,s[1])>0){
       			  rangeCursor[w]++;
       		  }else if(r->options.comparator->Compare(r->last_key,s[0])>=0){
+              // 如果当前块的最后一个 Key 大于缓存块的下界，那么需要缓存该数据块，因为有重叠
           		  //current block overlap with this range
       			  //printf("keys: %s %s %s %s\n",r->first_key.c_str(),s[0].ToString().c_str(),r->last_key.c_str(),s[1].ToString().c_str());
       			  shouldCache = true;
@@ -213,6 +224,8 @@ void TableBuilder::WriteBlock(BlockBuilder* block, BlockHandle* handle, bool cac
       		  break;
       	  }
       }
+
+      // 把新的构建的块插入到对应的缓存中
       //insert this block into cache since it will be visited in the future with a high potential
       if(shouldCache){
       		char cache_key_buffer[16];
@@ -228,6 +241,8 @@ void TableBuilder::WriteBlock(BlockBuilder* block, BlockHandle* handle, bool cac
       		//delete blockobj;
       }
   }
+
+  // 写入块编码后的数据到文件
   WriteRawBlock(block_contents, type, handle);
 
   r->compressed_output.clear();

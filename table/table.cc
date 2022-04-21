@@ -460,6 +460,7 @@ Status Table::EvictBlockCache(){
 Status Table::GetKeyRangeCached(std::vector<Slice *> *result){
 
 	Status s;
+  // 构建索引块的迭代器
 	Iterator* iiter = rep_->index_block->NewIterator(rep_->options.comparator);
 	Cache *block_cache = rep_->options.block_cache;
 	if(!block_cache){
@@ -469,6 +470,7 @@ Status Table::GetKeyRangeCached(std::vector<Slice *> *result){
 
 	iiter->SeekToFirst();
 
+  // 遍历 SST
 	while (iiter->Valid()) {
 	    Slice handle_value = iiter->value();
 	    BlockHandle handle;
@@ -478,25 +480,38 @@ Status Table::GetKeyRangeCached(std::vector<Slice *> *result){
 	        EncodeFixed64(cache_key_buffer, rep_->filenumber);
 	        EncodeFixed64(cache_key_buffer+8, handle.offset());
 	        Slice key(cache_key_buffer, sizeof(cache_key_buffer));
+
+          // 只是查询块缓存，不做 LRU 队列相关的操作
 	        Cache::Handle *handle = block_cache->LiteLookup(key);
 	        if(handle){
+            // 如果缓存命中，取出对应的块
 	        	Block *block = reinterpret_cast<Block*>(block_cache->Value(handle));
         		Slice *minAndMax = new Slice[2];
+
+            // 读取块的数据，构建迭代器
 	        	Iterator *ittr = block->NewIterator(rep_->options.comparator);
         		ittr->SeekToFirst();
+
+            // 复制起始 key
         		char *ch1 = new char[ittr->key().size()];
         		memcpy(ch1,ittr->key().data(),ittr->key().size());
         		Slice s1(ch1,ittr->key().size());
         		minAndMax[0] = s1;
 
+            // 移动到块的末尾
         		ittr->SeekToLast();
+            // 复制结束 key
         		char *ch2 = new char[ittr->key().size()];
         		memcpy(ch2,ittr->key().data(),ittr->key().size());
         		Slice s2(ch2,ittr->key().size());
         		minAndMax[1] = s2;
 		        //printf("%s %s\n",minAndMax[0].ToString().c_str(),minAndMax[1].ToString().c_str());
+
+            // 得到当前块的范围，加入到 result
 		        result->push_back(minAndMax);
 	        	delete ittr;
+
+            // 相应地从缓存中主动驱逐
 		        block_cache->Release(handle);
 	        }
 	    }

@@ -40,6 +40,7 @@ class DBImpl : public DB {
   virtual void UpdateKeyCache(const Slice& key, const Slice &value);
   virtual int RangeQuery(const ReadOptions& options,
                          const Slice& startkey, const Slice &endkey);
+  bool GetProperty(const Slice& property, std::string* value);
 
   virtual Iterator* NewIterator(const ReadOptions&);
   virtual const Snapshot* GetSnapshot();
@@ -157,13 +158,15 @@ class DBImpl : public DB {
   // compactions that produced data for the specified "level".
   struct CompactionStats {
     int64_t micros;
+    int64_t imm_micros;
     int64_t bytes_read;
     int64_t bytes_written;
 
-    CompactionStats() : micros(0), bytes_read(0), bytes_written(0) { }
+    CompactionStats() : micros(0), imm_micros(0), bytes_read(0), bytes_written(0) { }
 
     void Add(const CompactionStats& c) {
       this->micros += c.micros;
+      this->imm_micros += c.imm_micros;
       this->bytes_read += c.bytes_read;
       this->bytes_written += c.bytes_written;
     }

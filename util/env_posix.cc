@@ -102,6 +102,7 @@ class MmapLimiter {
  public:
   // Up to 1000 mmaps for 64-bit binaries; none for smaller pointer sizes.
   MmapLimiter() {
+    // SetAllowed(0);
     SetAllowed(sizeof(void*) >= 8 ? 1000 : 0);
   }
 
