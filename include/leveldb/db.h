@@ -88,6 +88,7 @@ class DB {
   //teng: get range
   virtual int RangeQuery(const ReadOptions& options,
                          const Slice& startkey, const Slice &endkey) = 0;
+  virtual bool GetProperty(const Slice& property, std::string* value) = 0;
 
 
   // Return a heap-allocated iterator over the contents of the database.

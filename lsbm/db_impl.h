@@ -40,7 +40,7 @@ class DBImpl : public DB {
   virtual void UpdateKeyCache(const Slice& key, const Slice &value);
   virtual int RangeQuery(const ReadOptions& options,
                          const Slice& startkey, const Slice &endkey);
-  bool GetProperty(const Slice& property, std::string* value);
+  bool GetProperty(const Slice& property, std::string* value) override;
 
   virtual Iterator* NewIterator(const ReadOptions&);
   virtual const Snapshot* GetSnapshot();
