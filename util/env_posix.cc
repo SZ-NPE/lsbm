@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file. See the AUTHORS file for names of contributors.
 
+#include <iostream>
 #include <deque>
 #include <set>
 #include <dirent.h>
@@ -27,6 +28,7 @@
 #include "util/mutexlock.h"
 #include "util/posix_logger.h"
 
+// #define ENABLE_DIRECT_IO
 
 namespace leveldb {
 
@@ -84,9 +86,26 @@ class PosixRandomAccessFile: public RandomAccessFile {
                       char* scratch) const {
     Status s;
 
-    ssize_t r = pread(fd_, scratch, n,static_cast<off_t>(offset));
+    #ifdef ENABLE_DIRECT_IO
+      char* buffer;
+      int buffer_size = 2048;
+      uint64_t offset_ = offset / buffer_size * buffer_size;
+      size_t n_ = (n / buffer_size + 2) * buffer_size;
+      uint64_t z = offset % buffer_size;
+    #endif
 
-    *result = Slice(scratch, (r < 0) ? 0 : r);
+    #ifdef ENABLE_DIRECT_IO
+      int r = posix_memalign((void**)&buffer, buffer_size, n_);
+      // std::cerr << "n_ " << n_ << " offset_ " << offset_ << " z " << z << std::endl;
+      ssize_t read_size = pread(fd_, buffer, n_, static_cast<off_t>(offset_));
+      memcpy(scratch, buffer + z, (read_size < 0) ? 0 : n);
+      *result = Slice(scratch, (read_size < 0) ? 0 : n);
+      free(buffer);
+    #else
+      ssize_t r = pread(fd_, scratch, n,static_cast<off_t>(offset));
+      *result = Slice(scratch, (r < 0) ? 0 : r);
+    #endif
+
     if (r < 0) {
       // An error: return a non-ok status
       s = IOError(filename_, errno);
@@ -102,8 +121,8 @@ class MmapLimiter {
  public:
   // Up to 1000 mmaps for 64-bit binaries; none for smaller pointer sizes.
   MmapLimiter() {
-    // SetAllowed(0);
-    SetAllowed(sizeof(void*) >= 8 ? 1000 : 0);
+    SetAllowed(0);
+    // SetAllowed(sizeof(void*) >= 8 ? 1000 : 0);
   }
 
   // If another mmap slot is available, acquire it and return true.
@@ -322,8 +341,11 @@ class PosixEnv : public Env {
     *result = NULL;
     Status s;
     //teng: direct IO, no case is allowed
-
-    int fd = open(fname.c_str(), O_RDONLY);
+    #ifdef ENABLE_DIRECT_IO
+      int fd = open(fname.c_str(), (O_RDONLY | O_DIRECT));
+    #else 
+      int fd = open(fname.c_str(), O_RDONLY);
+    #endif
 
     if (fd < 0) {
       s = IOError(fname, errno);
