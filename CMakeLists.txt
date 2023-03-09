@@ -5,6 +5,13 @@ set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-builtin-memcmp -pthread -DOS_LINUX
 
 #set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 
+
+option(ENABLE_DIO "Enable direct i/o" OFF)
+if(ENABLE_DIO)
+  # direct io
+  add_definitions(-DENABLE_DIRECT_IO)
+endif(ENABLE_DIO)
+
 include_directories(include)
 include_directories(.)
 
